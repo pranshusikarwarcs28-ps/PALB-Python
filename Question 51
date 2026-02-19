@@ -1,0 +1,34 @@
+class Solution:
+    def maxVisible(self, arr):
+        n = len(arr)
+        
+        def count_visible(direction_arr):
+            visible = [0] * n
+            stack = []
+            
+            for i in direction_arr:
+                cnt = 0
+                while stack and stack[-1] < arr[i]:
+                    stack.pop()
+                    cnt += 1
+                if stack:
+                    cnt += 1  # can see the next taller/equal person
+                visible[i] = cnt
+                stack.append(arr[i])
+            return visible
+        
+        # Right visibility
+        right_indices = list(range(n))
+        right_vis = count_visible(right_indices)
+        
+        # Left visibility (reverse)
+        left_indices = list(range(n-1, -1, -1))
+        left_vis = count_visible(left_indices)
+        left_vis.reverse()  # align with original indices
+        
+        # Total visible for each person = left + right + 1
+        total_vis = [left_vis[i] + right_vis[i] + 1 for i in range(n)]
+        
+        return max(total_vis)
+
+
